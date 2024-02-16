@@ -1,0 +1,4 @@
+[submodule "meta-st-stm32mpu-app-lorawan"]
+	path = meta-st-stm32mpu-app-lorawan
+	url = git@github.com:akarnil/meta-st-stm32mpu-app-lorawan.git
+	branch = kirkstone
