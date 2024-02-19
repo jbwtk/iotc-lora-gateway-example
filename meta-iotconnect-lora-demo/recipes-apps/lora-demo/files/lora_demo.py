@@ -10,7 +10,11 @@ def main():
 
     print('instantiate gateway instance from GRPC')
     chirp = ChirpstackHelper(server_ip, chirpstack_api_token)
-    gw_list = chirp.list_gateways()
+    gw_list = None
+    while gw_list is None:
+        gw_list = chirp.list_gateways()
+        print(f"waiting for GRPC at {server_ip} ...")
+        time.sleep(10)
     if len(gw_list) > 1:
         print('too many gateways. 80% model is one to many: gateway to nodes')
         exit()

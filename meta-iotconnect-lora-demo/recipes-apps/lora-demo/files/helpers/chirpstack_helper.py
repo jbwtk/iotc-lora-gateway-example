@@ -3,6 +3,7 @@ import json
 from google.protobuf.json_format import MessageToJson
 from grpc import insecure_channel
 from chirpstack_api.as_pb.external import api
+from grpc._channel import _InactiveRpcError
 
 
 class ChirpstackHelper(object):
@@ -10,7 +11,7 @@ class ChirpstackHelper(object):
     req_limit = 100
 
     def __init__(self, server_ip, token):
-        print('authorise GRPC helper ...')
+        print('authorise ChirpStack helper ...')
         self.auth_token = [("authorization", "Bearer %s" % token)]
         self.channel = insecure_channel(f'{server_ip}:8080')
 
@@ -18,8 +19,12 @@ class ChirpstackHelper(object):
         client = api.GatewayServiceStub(self.channel)
         req = api.ListGatewayRequest()
         req.limit = req_limit
-        response = client.List(req, metadata=self.auth_token)
-        return json.loads(MessageToJson(response))['result']
+        try:
+            response = client.List(req, metadata=self.auth_token)
+            return json.loads(MessageToJson(response))['result']
+        except _InactiveRpcError as e:
+            print("Inactive RPC:", e.details())
+            return None
 
     def list_service_profiles(self, req_limit=req_limit):
         client = api.ServiceProfileServiceStub(self.channel)

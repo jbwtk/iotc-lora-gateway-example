@@ -1,3 +1,4 @@
+import os
 import threading
 from abc import ABC
 
@@ -82,7 +83,12 @@ class LoraGateway(Gateway, ABC):
         self.mqtt_client.message_callback_add("application/+/device/+/event/up", self.on_child_mqtt)
         # self.mqtt_client.message_callback_add("gateway/+/event/up", self.on_gateway_mqtt)
         self.mqtt_client.on_message = self.on_mqtt_message
-        self.mqtt_client.connect(self.lora_ns_ip, 1883, keepalive=500)
+        try:
+            self.mqtt_client.connect(self.lora_ns_ip, 1883, keepalive=500)
+        except ConnectionRefusedError as e:
+            print(f'MQTT error for {self.lora_ns_ip}:{1883}')
+            print(e.strerror)
+            os._exit(os.EX_UNAVAILABLE)
         self.mqtt_client.subscribe('#')
         # self.mqtt_client.subscribe(f"application/{self.application_id}/device/+/event/up")
         self.mqtt_client.loop_forever()
