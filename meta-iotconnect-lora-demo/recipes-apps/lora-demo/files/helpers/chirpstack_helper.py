@@ -21,7 +21,10 @@ class ChirpstackHelper(object):
         req.limit = req_limit
         try:
             response = client.List(req, metadata=self.auth_token)
-            return json.loads(MessageToJson(response))['result']
+            gw_list = json.loads(MessageToJson(response))['result']
+            if len(gw_list) < 1:
+                return None
+            return gw_list
         except _InactiveRpcError as e:
             print("Inactive RPC:", e.details())
             return None

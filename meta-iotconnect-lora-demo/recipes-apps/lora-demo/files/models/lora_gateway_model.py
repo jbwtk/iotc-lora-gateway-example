@@ -130,7 +130,13 @@ class LoraGateway(Gateway, ABC):
             child.rssi = payload['rxInfo'][0]['rssi']
         except IndexError:
             pass
-        child_obj_json = json.loads(payload['objectJSON'])
+        try:
+            child_obj_json = json.loads(payload['objectJSON'])
+        except json.decoder.JSONDecodeError as e:
+            print(e.strerror)
+            print('check CayenneLPP codec?')
+            os._exit(os.)
+
 
         for m_key in child_obj_json:
             if not hasattr(child, m_key):
