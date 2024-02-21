@@ -18,46 +18,46 @@ Tested on Ubuntu 20.04, 22.04
 
 # Method
 1. Create a work directory, for example ~/work
-    ```bash
-    cd ~/work
-    ```
+```bash
+cd ~/work
+```
 
 2. Create project directory and enter it
-    ```bash
-    mkdir iotconnect-stm32mp17-kirkstone && cd iotconnect-stm32mp17-kirkstone
-    ```
+```bash
+mkdir iotconnect-stm32mp17-kirkstone && cd iotconnect-stm32mp17-kirkstone
+```
 
 3. Use repo tool to get the yocto sources
-    ```bash
-    repo init -u https://github.com/STMicroelectronics/oe-manifest.git -b refs/tags/openstlinux-5.15-yocto-kirkstone-mp1-v23.07.26 && repo sync    
-    ```
+```bash
+repo init -u https://github.com/STMicroelectronics/oe-manifest.git -b refs/tags/openstlinux-5.15-yocto-kirkstone-mp1-v23.07.26 && repo sync    
+```
 
 4. wget provided Makefile and Dockerfile to project directory and execute these commands in the terminal
-    ```bash
-    wget https://raw.githubusercontent.com/akarnil/iotconnect-lora-demo/master/Makefile && \
-    wget https://raw.githubusercontent.com/akarnil/iotconnect-lora-demo/master/Dockerfile
+```bash
+wget https://raw.githubusercontent.com/akarnil/iotconnect-lora-demo/master/Makefile && \
+wget https://raw.githubusercontent.com/akarnil/iotconnect-lora-demo/master/Dockerfile
 
-    git clone git@github.com:akarnil/iotconnect-lora-demo.git -b master ./layers/iotconnect-lora-demo
-    cd ./layers/iotconnect-lora-demo
-    git submodule update --init
-    cd -
+git clone git@github.com:akarnil/iotconnect-lora-demo.git -b master ./layers/iotconnect-lora-demo
+cd ./layers/iotconnect-lora-demo
+git submodule update --init
+cd -
 
-    make docker
+make docker
 
-    DISTRO=openstlinux-weston MACHINE=stm32mp1 source layers/meta-st/scripts/envsetup.sh
-    # go through all of the EULA and accept everything
-    
-    exit
-    
-    make env
-    bitbake-layers add-layer ../layers/iotconnect-lora-demo/meta-iotconnect-lora-demo/
-    bitbake-layers add-layer ../layers/iotconnect-lora-demo/meta-st-stm32mpu-app-lorawan/
+DISTRO=openstlinux-weston MACHINE=stm32mp1 source layers/meta-st/scripts/envsetup.sh
+# go through all of the EULA and accept everything
 
-    exit
+exit
 
-    make build
-    # this will take a while as this is the initial build.
-    ```
+make env
+bitbake-layers add-layer ../layers/iotconnect-lora-demo/meta-iotconnect-lora-demo/
+bitbake-layers add-layer ../layers/iotconnect-lora-demo/meta-st-stm32mpu-app-lorawan/
+
+exit
+
+make build
+# this will take a while as this is the initial build.
+```
 
 5. Continue from Step 7 of [How to integrate LoRaWAN gateway](https://wiki.st.com/stm32mpu-ecosystem-v3/wiki/How_to_integrate_LoRaWAN_gateway#Software_setup) to prepare the board for flashing, you can use the `make flash` target to simplifiy the process instead.
 
@@ -69,7 +69,7 @@ Once all of that is done, create a Global API key within chirpstack's interface 
 (use a text editor of choice, nano is also available)
 
 ```bash
-    vi /usr/bin/local/iotc/local_settings.py
+vi /usr/bin/local/iotc/local_settings.py
 ```
 
 Chirpstack connection:
@@ -83,14 +83,9 @@ Replace the values in iotc_config (company_name, solution_key, company_guid) wit
 
 Make sure you save your changes with `!wq`
 
-8. Use the `systemd` service to execute the IoTConnect application
+8. To launch the application execute
 ```bash
-    systemctl start lora-demo.service
-```
-
-9. To watch the logs use
-```bash
-    journalctl -fu lora-demo
+./usr/bin/local/iotc/lora_demo.py 
 ```
 
 ### Notes
@@ -99,8 +94,19 @@ Make sure you save your changes with `!wq`
 
 ### Extras
 
-1. To flash
-    ```bash
-    make flash
-    ```
+- To flash
+```bash
+make flash
+```
+
+- Use the `systemd` service to execute the IoTConnect application
+```bash
+systemctl start lora-demo.service
+```
+
+- To watch the logs use
+```bash
+journalctl -fu lora-demo
+```
+
 
