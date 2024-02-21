@@ -43,40 +43,34 @@ class IotcApiHelper(object):
             "username": username,
             "password": password
         }
-        access_token = requests.post(f"{API_AUTH_URL}/Auth/login", timeout=self.timeout, headers=header, json=body)
-        access_token = json.loads(access_token.text)
-        return access_token["access_token"]
+        response = requests.post(f"{API_AUTH_URL}/Auth/login", timeout=self.timeout, headers=header, json=body)
+
+        if response.status_code != 200:
+            print("error", response.status_code, response.json()['message'])
+            exit(-1)
+        return response.json()["access_token"]
 
     def get_template_guid(self, template_name):
-        response = requests.get(f"{API_DEVICE_URL}/device-template{'?DeviceTemplateName='}{template_name}", headers=self.header, timeout=self.timeout)
-        response = json.loads(response.text)
-        # print(json.dumps(response, indent=2))
-        for data in response["data"]:
-            return data["guid"]
+        uri = f"{API_DEVICE_URL}/device-template{'?DeviceTemplateName='}{template_name}"
+        response = requests.get(uri, headers=self.header, timeout=self.timeout)
+        return response.json()["data"][0]["guid"]
 
     def get_device_guid(self, device_name):
         uri = f"{API_DEVICE_URL}/Device?Name={device_name}"
         response = requests.get(uri, headers=self.header, timeout=self.timeout)
-        response = json.loads(response.text)
-        for data in response["data"]:
-            return data["guid"]
+        return response.json()["data"][0]["guid"]
 
     def get_device_guid_for_template(self, template_guid):
         uri = f"{API_DEVICE_URL}/template/{template_guid}/device"
         response = requests.get(uri, headers=self.header, timeout=self.timeout)
-        response = json.loads(response.text)
-        for data in response["data"]:
-            return data["guid"]
+        return response.json()["data"][0]["guid"]
 
     def get_entity_guid(self, company_name):
         response = requests.get(f"{API_USER_URL}/Entity", headers=self.header, timeout=self.timeout)
-        response = json.loads(response.text)
-        ret = ""
-        for data in response["data"]:
+        for data in response.json()["data"]:
             if data["name"] == company_name:
-                ret = data["guid"]
-                break
-        return ret
+                return data["guid"]
+        return None
 
     def get_data_types(self):
         """
@@ -128,8 +122,8 @@ class IotcApiHelper(object):
         return response.status_code == 200
 
     def get_template(self, template_guid):
-        response = requests.get(f"{API_DEVICE_URL}/device-template/{template_guid}",
-                                   timeout=self.timeout, headers=self.header)
+        uri = f"{API_DEVICE_URL}/device-template/{template_guid}"
+        response = requests.get(uri, timeout=self.timeout, headers=self.header)
         # response = json.loads(response.text)
         if response.status_code != 200:
             print('get_template', response)
