@@ -8,7 +8,7 @@ This guide is based off [How to integrate LoRaWAN gateway](https://wiki.st.com/s
 
 
 
-Tested on Ubuntu 22.04
+Tested on Ubuntu 20.04, 22.04
 
 # Requirements
 - Repo tool (from Google) - https://android.googlesource.com/tools/repo
@@ -59,7 +59,7 @@ Tested on Ubuntu 22.04
     # this will take a while as this is the initial build.
     ```
 
-5. Continue from [Step 7](https://wiki.st.com/stm32mpu-ecosystem-v3/wiki/How_to_integrate_LoRaWAN_gateway#Software_setup) to prepare the board for flashing, you can use the `make flash` target to simplifiy the process instead.
+5. Continue from Step 7 of [How to integrate LoRaWAN gateway](https://wiki.st.com/stm32mpu-ecosystem-v3/wiki/How_to_integrate_LoRaWAN_gateway#Software_setup) to prepare the board for flashing, you can use the `make flash` target to simplifiy the process instead.
 
 6. Continue through ST's tutorial to set up the LNS, the gateway and connect your devices in chirpstack.
 Once all of that is done, create a Global API key within chirpstack's interface and save it for futher use.
@@ -95,7 +95,7 @@ Make sure you save your changes with `!wq`
 
 ### Notes
 
-- This setup has been tested with the `RAK5146 SPI with GPS` variant, which will need to be explicitly selected during `chirpstack` configuration.
+- This setup has been tested with the `RAK5146 SPI with GPS` variant as well as the `RAK5146 USB with GPS`, which will need to be explicitly selected during `chirpstack` configuration.
 
 ### Extras
 
