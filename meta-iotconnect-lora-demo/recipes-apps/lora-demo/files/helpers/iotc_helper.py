@@ -53,17 +53,20 @@ class IotcApiHelper(object):
     def get_template_guid(self, template_name):
         uri = f"{API_DEVICE_URL}/device-template{'?DeviceTemplateName='}{template_name}"
         response = requests.get(uri, headers=self.header, timeout=self.timeout)
-        return response.json()["data"][0]["guid"]
+        for data in response.json()["data"]:
+            return data["guid"]
 
     def get_device_guid(self, device_name):
         uri = f"{API_DEVICE_URL}/Device?Name={device_name}"
         response = requests.get(uri, headers=self.header, timeout=self.timeout)
-        return response.json()["data"][0]["guid"]
+        for data in response.json()["data"]:
+            return data["guid"]
 
     def get_device_guid_for_template(self, template_guid):
         uri = f"{API_DEVICE_URL}/template/{template_guid}/device"
         response = requests.get(uri, headers=self.header, timeout=self.timeout)
-        return response.json()["data"][0]["guid"]
+        for data in response.json()["data"]:
+            return data["guid"]
 
     def get_entity_guid(self, company_name):
         response = requests.get(f"{API_USER_URL}/Entity", headers=self.header, timeout=self.timeout)
@@ -104,8 +107,10 @@ class IotcApiHelper(object):
                                  timeout=self.timeout, headers=self.header, json=template_create_request)
         # print('create_gateway_template', response.json()['message'])
         if response.status_code != 200:
-            return False
-        return json.loads(response.text)['data'][0]['deviceTemplateGuid']
+            return None
+        for data in response.json()["data"]:
+            return data["deviceTemplateGuid"]
+        # return json.loads(response.text)['data'][0]['deviceTemplateGuid']
 
     def delete_device(self, device_guid):
 

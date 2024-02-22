@@ -51,7 +51,11 @@ class LoraGateway(Gateway, ABC):
         return f"{self.name[:5]}_{self.unique_id[-4:]}"
 
     def template_check(self):
-
+        """
+        Checks for instance of template, if none creates template and device instance
+        creates/updates children on IOTC - if child params exists, API simply reports the conflict
+        reconnects SDK client to force update (may be redundant post SW fix, but inexpensive)
+        """
         api_helper = IotcApiHelper(config=self.iotc_config)
         template_guid = api_helper.get_template_guid(self.template_name())
         self.template_data['template_guid'] = template_guid
@@ -135,8 +139,7 @@ class LoraGateway(Gateway, ABC):
         except json.decoder.JSONDecodeError as e:
             print(e.strerror)
             print('check CayenneLPP codec?')
-            os._exit(os.)
-
+            os._exit(os.EX_DATAERR)
 
         for m_key in child_obj_json:
             if not hasattr(child, m_key):
