@@ -174,6 +174,6 @@ class LoraNode(GenericDevice):
             tag = f"lora{unique_id[-4:]}"
         super().__init__(unique_id, tag)
         self.instantiated = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.000Z")
-        self.attributes_to_exclude = self.attributes_to_exclude + ['description']
+        self.attributes_to_exclude = self.attributes_to_exclude + ['description', 'new_data']
         self.new_data = True
 
