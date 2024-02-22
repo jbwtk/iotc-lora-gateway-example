@@ -76,7 +76,8 @@ class IotcApiHelper(object):
         """
         useless, does not provide all of the attributes
         """
-        response = requests.get("https://avnetmaster.iotconnect.io/Property/custom-field-type", headers=self.header, timeout=self.timeout)
+        url = "https://avnetmaster.iotconnect.io/Property/custom-field-type"
+        response = requests.get(url, headers=self.header, timeout=self.timeout)
         response = json.loads(response.text)
         print('get_data_types', response)
 
@@ -99,7 +100,8 @@ class IotcApiHelper(object):
             # "firmwareguid": "string"
         }
 
-        response = requests.post(f"{API_DEVICE_URL}/device-template", timeout=self.timeout, headers=self.header, json=template_create_request)
+        response = requests.post(f"{API_DEVICE_URL}/device-template",
+                                 timeout=self.timeout, headers=self.header, json=template_create_request)
         # print('create_gateway_template', response.json()['message'])
         if response.status_code != 200:
             return False
@@ -107,7 +109,8 @@ class IotcApiHelper(object):
 
     def delete_device(self, device_guid):
 
-        response = requests.delete(f"{API_DEVICE_URL}/Device/{device_guid}", timeout=self.timeout, headers=self.header)
+        response = requests.delete(f"{API_DEVICE_URL}/Device/{device_guid}",
+                                   timeout=self.timeout, headers=self.header)
         # response = json.loads(response.text)
         if response.status_code != 200:
             print('delete_device', response)
@@ -168,7 +171,8 @@ class IotcApiHelper(object):
             # "attributeColor": "string"
         }
 
-        response = requests.post(f"{API_DEVICE_URL}/template-attribute", timeout=self.timeout, headers=self.header, json=attribute_create_request)
+        response = requests.post(f"{API_DEVICE_URL}/template-attribute",
+                                 timeout=self.timeout, headers=self.header, json=attribute_create_request)
         # response = json.loads(response.text)
         # for data in response["data"]:
         #     return data["newid"]
@@ -206,7 +210,8 @@ class IotcApiHelper(object):
             # "attributeColor": "string"
         }
 
-        response = requests.post(f"{API_DEVICE_URL}/template-attribute", timeout=self.timeout, headers=self.header, json=attribute_create_request)
+        response = requests.post(f"{API_DEVICE_URL}/template-attribute",
+                                 timeout=self.timeout, headers=self.header, json=attribute_create_request)
         response = json.loads(response.text)
         # for data in response["data"]:
         #     return data["newid"]
@@ -287,12 +292,22 @@ class IotcApiHelper(object):
                     value,
                     child_obj.tag)
                 continue
-            self.add_template_attribute(gateway.template_data['template_guid'], attribute, IOTCTypes.to_guid(value), child_obj.tag)
+            self.add_template_attribute(
+                gateway.template_data['template_guid'],
+                attribute,
+                IOTCTypes.to_guid(value),
+                child_obj.tag)
 
         entity_guid = self.get_entity_guid(self.company_name)
         parent_device_guid = self.get_device_guid(gateway.name)
 
-        self.create_device(child_obj.unique_id, gateway.template_data['template_guid'], child_obj.tag, child_obj.name, entity_guid, parent_device_guid)
+        self.create_device(
+            child_obj.unique_id,
+            gateway.template_data['template_guid'],
+            child_obj.tag,
+            child_obj.name,
+            entity_guid,
+            parent_device_guid)
 
     def delete_device_and_template(self, device_name):
         print(f'delete {device_name} and template from IOTC')
