@@ -41,6 +41,16 @@ class LoraGateway(Gateway, ABC):
             self.lastSeenAt = gw_json['lastSeenAt']
             self.networkServerName = gw_json['networkServerName']
 
+    def get_device_states(self):
+        data_array = [self.get_d2c_data()]
+        if self.children is not None:
+            for child in self.children:
+                if self.children[child].new_data:
+                    child_data = self.children[child].get_d2c_data()
+                    data_array.append(child_data)
+                    self.children[child].new_data = False
+        return data_array
+
     def is_connected(self):
         return self.SdkClient is not None
 
@@ -122,6 +132,7 @@ class LoraGateway(Gateway, ABC):
         upd_child = False
         try:
             child = self.children[child_id]
+            child.new_data = True
         except KeyError:
             # child does not exist ...
             print('MYSTERY CHILD!')
@@ -164,4 +175,5 @@ class LoraNode(GenericDevice):
         super().__init__(unique_id, tag)
         self.instantiated = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.000Z")
         self.attributes_to_exclude = self.attributes_to_exclude + ['description']
+        self.new_data = True
 
