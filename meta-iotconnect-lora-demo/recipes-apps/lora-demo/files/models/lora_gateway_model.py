@@ -41,6 +41,16 @@ class LoraGateway(Gateway, ABC):
             self.lastSeenAt = gw_json['lastSeenAt']
             self.networkServerName = gw_json['networkServerName']
 
+    def get_device_states(self):
+        data_array = [self.get_d2c_data()]
+        if self.children is not None:
+            for child in self.children:
+                if self.children[child].new_data:
+                    child_data = self.children[child].get_d2c_data()
+                    data_array.append(child_data)
+                    self.children[child].new_data = False
+        return data_array
+
     def is_connected(self):
         return self.SdkClient is not None
 
@@ -51,7 +61,11 @@ class LoraGateway(Gateway, ABC):
         return f"{self.name[:5]}_{self.unique_id[-4:]}"
 
     def template_check(self):
-
+        """
+        Checks for instance of template, if none creates template and device instance
+        creates/updates children on IOTC - if child params exists, API simply reports the conflict
+        reconnects SDK client to force update (may be redundant post SW fix, but inexpensive)
+        """
         api_helper = IotcApiHelper(config=self.iotc_config)
         template_guid = api_helper.get_template_guid(self.template_name())
         self.template_data['template_guid'] = template_guid
@@ -118,6 +132,7 @@ class LoraGateway(Gateway, ABC):
         upd_child = False
         try:
             child = self.children[child_id]
+            child.new_data = True
         except KeyError:
             # child does not exist ...
             print('MYSTERY CHILD!')
@@ -135,8 +150,7 @@ class LoraGateway(Gateway, ABC):
         except json.decoder.JSONDecodeError as e:
             print(e.strerror)
             print('check CayenneLPP codec?')
-            os._exit(os.)
-
+            os._exit(os.EX_DATAERR)
 
         for m_key in child_obj_json:
             if not hasattr(child, m_key):
@@ -160,5 +174,6 @@ class LoraNode(GenericDevice):
             tag = f"lora{unique_id[-4:]}"
         super().__init__(unique_id, tag)
         self.instantiated = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.000Z")
-        self.attributes_to_exclude = self.attributes_to_exclude + ['description']
+        self.attributes_to_exclude = self.attributes_to_exclude + ['description', 'new_data']
+        self.new_data = True
 
