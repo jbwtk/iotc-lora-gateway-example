@@ -6,7 +6,7 @@ Provided are both the `Dockerfile` and `Makefile` to simplify the build process.
 
 This guide is based off [How to integrate LoRaWAN gateway](https://wiki.st.com/stm32mpu-ecosystem-v3/wiki/How_to_integrate_LoRaWAN_gateway#How_to_run_the_ChirpStack_application_on_STM32MP157x-DKx_Discovery_kit)
 
-
+The "metaphor" that reflects the LoRaWan entities against IOTConnect is simplistic; it creates an IOTC Gateway instance to represent a single gateway/concentrator on the Chirpstack LNS, with all the LoRaWan nodes as child devices of this entity. This should satisfy 80% of use cases.
 
 Tested on Ubuntu 20.04, 22.04
 
@@ -87,6 +87,7 @@ Make sure you save your changes with `!wq`
 ```bash
 ./usr/bin/local/iotc/lora_demo.py 
 ```
+the terminal multiplexer `screen` is installed.
 
 ### Notes
 
@@ -99,8 +100,9 @@ Make sure you save your changes with `!wq`
 make flash
 ```
 
-- Use the `systemd` service to execute the IoTConnect application
+- Use the `systemd` service so the IoTConnect application executes on boot
 ```bash
+systemctl enable lora-demo.service
 systemctl start lora-demo.service
 ```
 
