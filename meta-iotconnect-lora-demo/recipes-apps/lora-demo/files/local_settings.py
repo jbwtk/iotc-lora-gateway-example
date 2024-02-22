@@ -1,5 +1,3 @@
-
-
 '''
 IOTConnect config
 '''
@@ -27,4 +25,3 @@ chirpstack_api_token = 'eyJhbGc...Tk5N' \
             'RcNJdyLkPU8ciNsiDE...HEhQ'
 
 min_transmit = 30
-
