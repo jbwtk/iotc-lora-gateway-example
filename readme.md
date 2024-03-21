@@ -92,7 +92,7 @@ The template will be complete once all nodes have updated their attributes.
 
 It may be necessary to edit this file with e.g. the correct value for auth_type, which defaults to 1.
 
-It is straightforward to save the file and run the application to build the template json file, then upload it and create the gateway device instance on the IOTConnect back end before setting credentials for the SDK client.
+It is straightforward to save and exit `local_settings.py` at this point and run the application to build the template json file, then upload it and create the gateway device instance on the IOTConnect back end before setting credentials for the SDK client.
 
 Of course, if you prefer, you can manually create the template and device instance in the IOTConnect portal in the normal manner. The template json file can be used to assist with troubleshooting this.
 
