@@ -62,7 +62,7 @@ make build
 5. Continue from Step 7 of [How to integrate LoRaWAN gateway](https://wiki.st.com/stm32mpu-ecosystem-v3/wiki/How_to_integrate_LoRaWAN_gateway#Software_setup) to prepare the board for flashing, you can use the `make flash` target to simplifiy the process instead.
 
 6. Continue through ST's tutorial to set up the LNS, the gateway and connect your devices in chirpstack.
-Once all of that is done, create a Global API key within chirpstack's interface and save it for futher use.
+Once all of that is done, create a Global API key within chirpstack's interface and save it for further use.
 
 7. Via `ssh` or `serial` access the `STM32MP157` and modify the `local_settings.py` file
 
@@ -74,13 +74,13 @@ vi /usr/bin/local/iotc/local_settings.py
 
 #### Chirpstack connection:
 
-replace the truncated value for chirpstack_api_token with the global API key you just created.
+replace the truncated value for `chirpstack_api_token` with the global API key you just created.
 
 #### Template and device creation:
 
-If you have credentials for the IOTConnect template/device API, uncomment the iotc_config section.
+If you have credentials for the IOTConnect template/device API, uncomment the `iotc_config` section.
 
-Replace the values in iotc_config (company_name, solution_key, company_guid) with the correct values for your account.
+Replace the values in `iotc_config` (`company_name, solution_key, company_guid`) with the correct values for your account.
 
 This will automatically create the template and corresponding gateway device instance on IOTC.
 
@@ -95,7 +95,7 @@ If you have not yet created the template and device instance on the IOTConnect b
 
 #### IOTConnect connection:
 
-Replace the truncated value for sid with the correct value from IOTConnect, and make sure the values of cpid and env are correct for your account.
+Replace the truncated value for `sid` with the correct value from IOTConnect, and make sure the values of `cpid` and `env` are correct for your account.
 
 Make sure you save your changes with `!wq`
 
