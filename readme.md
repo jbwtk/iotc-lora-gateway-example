@@ -10,13 +10,13 @@ The "metaphor" that reflects the LoRaWan entities against IOTConnect is simplist
 
 Tested on Ubuntu 20.04, 22.04
 
-# Requirements
+### Requirements
 - Repo tool (from Google) - https://android.googlesource.com/tools/repo
 - Docker - https://docs.docker.com/engine/install/ubuntu/ + https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
 - git name and email added to global scope
 - STM32_Programmer_CLI - similar steps to [this](https://wiki.somlabs.com/index.php/Installing_STM32CubeProgrammer_on_Ubuntu_18.04) but use the latest release
 
-# Method
+### Method
 1. Create a work directory, for example ~/work
 ```bash
 cd ~/work
@@ -45,7 +45,7 @@ cd -
 make docker
 
 DISTRO=openstlinux-weston MACHINE=stm32mp1 source layers/meta-st/scripts/envsetup.sh
-# go through all of the EULA and accept everything
+### go through all of the EULA and accept everything
 
 exit
 
@@ -56,7 +56,7 @@ bitbake-layers add-layer ../layers/iotconnect-lora-demo/meta-st-stm32mpu-app-lor
 exit
 
 make build
-# this will take a while as this is the initial build.
+### this will take a while as this is the initial build.
 ```
 
 5. Continue from Step 7 of [How to integrate LoRaWAN gateway](https://wiki.st.com/stm32mpu-ecosystem-v3/wiki/How_to_integrate_LoRaWAN_gateway#Software_setup) to prepare the board for flashing, you can use the `make flash` target to simplifiy the process instead.
@@ -72,20 +72,29 @@ Once all of that is done, create a Global API key within chirpstack's interface 
 vi /usr/bin/local/iotc/local_settings.py
 ```
 
-Chirpstack connection:
+####Chirpstack connection:
+
 replace the truncated value for chirpstack_api_token with the global API key you just created.
 
 Template and device creation:
-If you have credentials for the IOTConnect template/device API, uncomment the iotc_config section
+
+If you have credentials for the IOTConnect template/device API, uncomment the iotc_config section.
+
 Replace the values in iotc_config (company_name, solution_key, company_guid) with the correct values for your account.
+
 This will automatically create the template and corresponding gateway device instance on IOTC.
+
 If you do not have these credentials, a template json file (`./template[Unique ID].json`) will be written to the filesystem. 
+
 As the lora nodes provide telemetry this will be updated, and can be uploaded to the IOTC portal.
+
 The template will not be complete once all nodes have provided telemetry.
-It may be necessary to edit this file with e.g. the correct value for auth_type.
-If you have not yet created the template and device instance on the IOTConnect back end, it is straightforward to save the file and run the application to build the template json file before setting credentials for the SDK client.
+
+It may be necessary to edit this file with e.g. the correct value for auth_type, which defaults to 1.
+If you have not yet created the template and device instance on the IOTConnect back end, it is straightforward to save the file and run the application to build the template json file and upload it before setting credentials for the SDK client.
 
 IOTConnect connection:
+
 Replace the truncated value for sid with the correct value from IOTConnect, and make sure the values of cpid and env are correct for your account.
 
 Make sure you save your changes with `!wq`
