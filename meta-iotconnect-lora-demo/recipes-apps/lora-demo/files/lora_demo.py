@@ -18,8 +18,17 @@ def main():
     if len(gw_list) > 1:
         print('too many gateways. 80% model is one to many: gateway to nodes')
         exit()
+
     lora_gw = gw_list[0]
-    gw = LoraGateway(cpid, lora_gw['id'], env, iotc_config, server_ip, gw_json=lora_gw, sid=sid)
+    try:
+        api_conf = iotc_config
+    #     gw = LoraGateway(cpid, lora_gw['id'], env, server_ip, iotc_config, gw_json=lora_gw, sid=sid)
+    except NameError:
+        print("No device/template API credentials")
+        api_conf = None
+    #     gw = LoraGateway(cpid, lora_gw['id'], env, server_ip, None, gw_json=lora_gw, sid=sid)
+
+    gw = LoraGateway(cpid, lora_gw['id'], env, server_ip, iotc_config=api_conf, gw_json=lora_gw, sid=sid)
 
     print('instantiate devices from GRPC')
     devices = chirp.list_devices()
@@ -41,8 +50,10 @@ def main():
             m_time = time.time()
             if not gw.is_connected():
                 gw.connect()
-            gw.SdkClient._dftime = None
-            gw.send_device_states()
+            # override hardcoded min transmit in sdk
+            if gw.SdkClient is not None:
+                gw.SdkClient._dftime = None
+                gw.send_device_states()
             # print('gw.get_device_states():')
             # print(json.dumps(gw.get_device_states(), indent=2))
 

@@ -71,3 +71,43 @@ class IOTCTypes:
             and list_object[0] == float(f"{list_object[0]:10.8f}")
             and list_object[1] == float(f"{list_object[1]:11.8f}")
         )
+
+    @classmethod
+    def to_string(cls, value):
+
+        if isinstance(value, str):
+            return "STRING"
+
+        elif isinstance(value, bool):
+            return "BOOLEAN"
+
+        elif isinstance(value, float):
+            return "DECIMAL"
+
+        elif isinstance(value, int):
+            # or isinstance(value, numbers.Integral)
+            # return cls.guids["INTEGER"]  # will cause error if value is a float at integer value at instantiation
+            return "DECIMAL"
+
+        elif isinstance(value, dict):
+            return "OBJECT"
+
+        elif isinstance(value, str):
+            return "STRING"
+
+        # elif isinstance(value, datetime):
+        #     return cls.data_types['DATETIME']
+
+        # elif isinstance(value, bit):
+        #     return cls.data_types['BIT']
+
+        elif cls.is_lat_long(value):
+            return "LATLONG"
+
+        # elif isinstance(value, type):
+        #     return cls.data_types['DATE']
+
+        # elif isinstance(value, type):
+        #     return cls.data_types['TIME']
+
+        return "STRING"

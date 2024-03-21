@@ -64,7 +64,7 @@ make build
 6. Continue through ST's tutorial to set up the LNS, the gateway and connect your devices in chirpstack.
 Once all of that is done, create a Global API key within chirpstack's interface and save it for futher use.
 
-7. Via `ssh` or `serial` access the `STM32MP157` and modifiy the `local_settings.py` file
+7. Via `ssh` or `serial` access the `STM32MP157` and modify the `local_settings.py` file
 
 (use a text editor of choice, nano is also available)
 
@@ -75,11 +75,18 @@ vi /usr/bin/local/iotc/local_settings.py
 Chirpstack connection:
 replace the truncated value for chirpstack_api_token with the global API key you just created.
 
-IOTConnect connection:
-replace the truncated value for sid with the correct value from IOTConnect, and make sure the values of cpid and env are correct for your account
+Template and device creation:
+If you have credentials for the IOTConnect template/device API, uncomment the iotc_config section
+Replace the values in iotc_config (company_name, solution_key, company_guid) with the correct values for your account.
+This will automatically create the template and corresponding gateway device instance on IOTC.
+If you do not have these credentials, a template json file (`./template[Unique ID].json`) will be written to the filesystem. 
+As the lora nodes provide telemetry this will be updated, and can be uploaded to the IOTC portal.
+The template will not be complete once all nodes have provided telemetry.
+It may be necessary to edit this file with e.g. the correct value for auth_type.
+If you have not yet created the template and device instance on the IOTConnect back end, it is straightforward to save the file and run the application to build the template json file before setting credentials for the SDK client.
 
-IOTConnect template/device API:
-Replace the values in iotc_config (company_name, solution_key, company_guid) with the correct values for your account
+IOTConnect connection:
+Replace the truncated value for sid with the correct value from IOTConnect, and make sure the values of cpid and env are correct for your account.
 
 Make sure you save your changes with `!wq`
 

@@ -4,7 +4,7 @@ from abc import ABC
 
 import paho.mqtt.client as mqtt
 from models.device_model import *
-from helpers.iotc_helper import IotcApiHelper
+from helpers.iotc_helper import *
 
 
 def remove_chars(in_str, chars):
@@ -20,11 +20,12 @@ def dump(obj):
 
 class LoraGateway(Gateway, ABC):
 
-    def __init__(self, company_id, unique_id, environment, iotc_config, lora_ns_ip, gw_json = None, sdk_options=None, sid=None):
+    def __init__(self, company_id, unique_id, environment, lora_ns_ip, iotc_config=None, gw_json=None, sdk_options=None, sid=None):
         super().__init__(company_id, unique_id, environment, sdk_options, sid)
         self.mqtt_client = mqtt.Client()
         self.iotc_config = iotc_config
         self.instantiated = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.000Z")
+        self.auth_type = 1
         # self.location = {}
         self.template_data = {"code": f"T{self.unique_id[-9:]}"}
         self.attributes_to_exclude = self.attributes_to_exclude + [
@@ -40,6 +41,12 @@ class LoraGateway(Gateway, ABC):
             self.firstSeenAt = gw_json['firstSeenAt']
             self.lastSeenAt = gw_json['lastSeenAt']
             self.networkServerName = gw_json['networkServerName']
+
+    def connect(self):
+        try:
+            super().connect()
+        except Exception as e:
+            print("IOTConnect client can't connect")
 
     def get_device_states(self):
         data_array = [self.get_d2c_data()]
@@ -66,15 +73,17 @@ class LoraGateway(Gateway, ABC):
         creates/updates children on IOTC - if child params exists, API simply reports the conflict
         reconnects SDK client to force update (may be redundant post SW fix, but inexpensive)
         """
-        api_helper = IotcApiHelper(config=self.iotc_config)
-        template_guid = api_helper.get_template_guid(self.template_name())
-        self.template_data['template_guid'] = template_guid
-        if template_guid is None:
-            print(f'create template & instance for', self.name)
-            self.template_data['template_guid'] = api_helper.create_template_and_gateway_device_on_iotc(self)
-        for child in self.children:
-            print(f'create attrs & instance for', child)
-            api_helper.create_child_on_iotc(self, self.children[child])
+        if self.iotc_config is not None:
+            api_helper = IotcApiHelper(config=self.iotc_config)
+            template_guid = api_helper.get_template_guid(self.template_name())
+            self.template_data['template_guid'] = template_guid
+            if template_guid is None:
+                print(f'create template & instance for', self.name)
+                self.template_data['template_guid'] = api_helper.create_template_and_gateway_device_on_iotc(self)
+            for child in self.children:
+                print(f'create attrs & instance for', child)
+                api_helper.create_child_on_iotc(self, self.children[child])
+
         if self.is_connected():
             self.connect()
 
@@ -162,10 +171,14 @@ class LoraGateway(Gateway, ABC):
 
         if upd_child:
             self.updatedAt = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.000Z")
-            api_helper = IotcApiHelper(config=self.iotc_config)
-            api_helper.create_child_on_iotc(self, child)
-            if self.is_connected():
-                self.connect()
+            if self.iotc_config is not None:
+                api_helper = IotcApiHelper(config=self.iotc_config)
+                api_helper.create_child_on_iotc(self, child)
+                if self.is_connected():
+                    self.connect()
+            else:
+                json_helper = IotcJsonHelper(self)
+                json_helper.output_json()
 
 
 class LoraNode(GenericDevice):
