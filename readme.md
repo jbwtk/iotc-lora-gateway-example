@@ -72,11 +72,11 @@ Once all of that is done, create a Global API key within chirpstack's interface 
 vi /usr/bin/local/iotc/local_settings.py
 ```
 
-####Chirpstack connection:
+#### Chirpstack connection:
 
 replace the truncated value for chirpstack_api_token with the global API key you just created.
 
-Template and device creation:
+#### Template and device creation:
 
 If you have credentials for the IOTConnect template/device API, uncomment the iotc_config section.
 
@@ -93,7 +93,7 @@ The template will not be complete once all nodes have provided telemetry.
 It may be necessary to edit this file with e.g. the correct value for auth_type, which defaults to 1.
 If you have not yet created the template and device instance on the IOTConnect back end, it is straightforward to save the file and run the application to build the template json file and upload it before setting credentials for the SDK client.
 
-IOTConnect connection:
+#### IOTConnect connection:
 
 Replace the truncated value for sid with the correct value from IOTConnect, and make sure the values of cpid and env are correct for your account.
 
