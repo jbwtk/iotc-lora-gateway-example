@@ -6,12 +6,12 @@ cpid = 'avtds'
 env = 'avnetpoc'
 sid = 'Yjg5M...NzAuMTQ='
 
-# API config
-iotc_config = {
-    "company_name": "Witekio",
-    "solution_key": "RjQ...dxNmFj",
-    "company_guid": "b892c358-e375-4cc3-8841-32e271e26151"
-}
+## API config
+#iotc_config = {
+#    "company_name": "Witekio",
+#    "solution_key": "RjQ...dxNmFj",
+#    "company_guid": "b892c358-e375-4cc3-8841-32e271e26151"
+#}
 
 '''
 LNS configuration.
