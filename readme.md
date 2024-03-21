@@ -79,20 +79,14 @@ replace the truncated value for `chirpstack_api_token` with the global API key y
 #### Template and device creation:
 
 If you have credentials for the IOTConnect template/device API, uncomment the `iotc_config` section.
-
-Replace the values in `iotc_config` (`company_name, solution_key, company_guid`) with the correct values for your account.
-
-This will automatically create and update the template and gateway device instance on IOTC as the lora nodes provide telemetry.
+<br>Replace the values in `iotc_config` (`company_name, solution_key, company_guid`) with the correct values for your account.
+<br>This will automatically create and update the template and gateway device instance on IOTC as the lora nodes provide telemetry.
 
 If you do not have these credentials, a template json file (`./template_[Unique ID].json`) will be automatically written to the filesystem. 
-
-As the lora nodes provide telemetry this will be updated, and can be uploaded to the IOTC portal.
-
-The template will be complete once all nodes have updated their attributes.
-
-It may be necessary to edit this file with e.g. the correct value for auth_type, which defaults to 1.
-
-It is straightforward to save and exit `local_settings.py` at this point and run the application to build the template json file, then upload it and create the gateway device instance on the IOTConnect back end before setting credentials for the SDK client.
+<br>As the lora nodes provide telemetry this will be updated, and can be uploaded to the IOTC portal.
+<br>The template will be complete once all nodes have updated their attributes.
+<br>It may be necessary to edit this file with e.g. the correct value for auth_type, which defaults to 1.
+<br>It is straightforward to save and exit `local_settings.py` at this point and run the application to build the template json file, then upload it and create the gateway device instance on the IOTConnect back end before setting credentials for the SDK client.
 
 Of course, if you prefer, you can manually create the template and device instance in the IOTConnect portal in the normal manner. The template json file can be used to assist with troubleshooting this.
 
@@ -106,7 +100,6 @@ Make sure you save your changes with `!wq`
 ```bash
 ./usr/bin/local/iotc/lora_demo.py 
 ```
-the terminal multiplexer `screen` is installed.
 
 ### Notes
 
@@ -129,5 +122,7 @@ systemctl start lora-demo.service
 ```bash
 journalctl -fu lora-demo
 ```
+
+- The terminal multiplexer `screen` is installed.
 
 
