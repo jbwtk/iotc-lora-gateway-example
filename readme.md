@@ -84,7 +84,7 @@ Replace the values in `iotc_config` (`company_name, solution_key, company_guid`)
 
 This will automatically create and update the template and gateway device instance on IOTC as the lora nodes provide telemetry.
 
-If you do not have these credentials, a template json file (`./template[Unique ID].json`) will be written to the filesystem. 
+If you do not have these credentials, a template json file (`./template_[Unique ID].json`) will be automatically written to the filesystem. 
 
 As the lora nodes provide telemetry this will be updated, and can be uploaded to the IOTC portal.
 
@@ -92,7 +92,9 @@ The template will be complete once all nodes have updated their attributes.
 
 It may be necessary to edit this file with e.g. the correct value for auth_type, which defaults to 1.
 
-If you have not yet created the template and device instance on the IOTConnect back end, it is straightforward to save the file and run the application to build the template json file and upload it before setting credentials for the SDK client.
+It is straightforward to save the file and run the application to build the template json file, then upload it and create the gateway device instance on the IOTConnect back end before setting credentials for the SDK client.
+
+Of course, if you prefer, you can manually create the template and device instance in the IOTConnect portal in the normal manner. The template json file can be used to assist with troubleshooting this.
 
 #### IOTConnect connection:
 
