@@ -34,10 +34,10 @@ repo init -u https://github.com/STMicroelectronics/oe-manifest.git -b refs/tags/
 
 4. wget provided Makefile and Dockerfile to project directory and execute these commands in the terminal
 ```bash
-wget https://raw.githubusercontent.com/akarnil/iotconnect-lora-demo/master/Makefile && \
-wget https://raw.githubusercontent.com/akarnil/iotconnect-lora-demo/master/Dockerfile
+wget https://raw.githubusercontent.com/avnet-iotconnect/iotc-lora-gateway-example/master/Makefile && \
+wget https://raw.githubusercontent.com/avnet-iotconnect/iotc-lora-gateway-example/master/Dockerfile
 
-git clone git@github.com:akarnil/iotconnect-lora-demo.git -b master ./layers/iotconnect-lora-demo
+git clone git@github.com:avnet-iotconnect/iotc-lora-gateway-example.git -b master ./layers/iotconnect-lora-demo
 cd ./layers/iotconnect-lora-demo
 git submodule update --init
 cd -
