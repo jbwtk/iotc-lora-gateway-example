@@ -267,7 +267,7 @@ class IotcApiHelper(object):
         # Create template
         template_guid = self.create_gateway_template(
             lora_gateway.template_data['code'],
-            1,
+            lora_gateway.auth_type,
             lora_gateway.tag(),
             lora_gateway.template_name()
         )
@@ -328,3 +328,85 @@ class IotcApiHelper(object):
         except Exception as e:
             print('response from IOTC in delete_template', e)
 
+
+class IotcJsonHelper(object):
+
+    def __init__(self, lora_gateway):
+        self.gw_uid = lora_gateway.unique_id
+        auth_type = 1
+        df_time = 60
+        try:
+            auth_type = lora_gateway.SdkClient._data_json["meta"]['at']
+            df_time = lora_gateway.SdkClient._data_frequency
+        except AttributeError:
+            pass
+        self.template_structure = {
+            "name": lora_gateway.template_name(),
+            # "authType": "1 | 2 | 3 | 4 | 5 | 7",
+            "authType": auth_type,
+            "code": lora_gateway.template_data['code'],
+            "messageVersion": "2.1",
+            "tag": lora_gateway.tag(),
+            "properties": {
+                "dataFrequency": df_time,
+                "description": "",
+                "fileSupport": False
+            },
+            "isIotEdgeEnable": False,
+            "attributes": [],
+            # "settings": [],
+            # "commands": [],
+            # "directMethods": [],
+            "_meta": {
+                "version": "2.0"
+            }
+        }
+
+        # add gateway attributes:
+        for attribute, value in lora_gateway.get_state().items():
+            if isinstance(value, dict):
+                self.json_obj(attribute, value, lora_gateway.tag())
+                continue
+            self.json_attr(attribute, value, lora_gateway.tag())
+
+        # add child attributes:
+        for child_index in lora_gateway.children:
+            child = lora_gateway.children[child_index]
+            for attribute, value in child.get_state().items():
+                if isinstance(value, dict):
+                    self.json_obj(attribute, value, child.tag)
+                    continue
+                self.json_attr(attribute, value, child.tag)
+
+    def json_attr(self, attribute, value, tag):
+        self.template_structure['attributes'].append(
+            {"name": attribute,
+             "displayName": None,
+             "type": IOTCTypes.to_string(value),
+             "tag": tag
+             })
+
+    def json_obj(self, attr_object, value_object, tag):
+        childs = []
+        for attribute, value in value_object.items():
+            childs.append(
+                {"name": attribute,
+                 "displayName": None,
+                 "type": IOTCTypes.to_string(value),
+                 }
+            )
+        self.template_structure['attributes'].append(
+            {"name": attr_object,
+             "displayName": None,
+             "type": "OBJECT",
+             "childs": childs,
+             "tag": tag
+             })
+
+    def output_json(self):
+        filename = f"template_{self.gw_uid}.json"
+        out_file = open(filename, "w")
+        output = json.dumps(self.template_structure, indent=2)
+        out_file.write(output)
+        print(f"written template to ./{filename}")
+    

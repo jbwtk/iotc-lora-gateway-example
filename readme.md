@@ -10,13 +10,13 @@ The "metaphor" that reflects the LoRaWan entities against IOTConnect is simplist
 
 Tested on Ubuntu 20.04, 22.04
 
-# Requirements
+### Requirements
 - Repo tool (from Google) - https://android.googlesource.com/tools/repo
 - Docker - https://docs.docker.com/engine/install/ubuntu/ + https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
 - git name and email added to global scope
 - STM32_Programmer_CLI - similar steps to [this](https://wiki.somlabs.com/index.php/Installing_STM32CubeProgrammer_on_Ubuntu_18.04) but use the latest release
 
-# Method
+### Method
 1. Create a work directory, for example ~/work
 ```bash
 cd ~/work
@@ -34,10 +34,10 @@ repo init -u https://github.com/STMicroelectronics/oe-manifest.git -b refs/tags/
 
 4. wget provided Makefile and Dockerfile to project directory and execute these commands in the terminal
 ```bash
-wget https://raw.githubusercontent.com/akarnil/iotconnect-lora-demo/master/Makefile && \
-wget https://raw.githubusercontent.com/akarnil/iotconnect-lora-demo/master/Dockerfile
+wget https://raw.githubusercontent.com/avnet-iotconnect/iotc-lora-gateway-example/master/Makefile && \
+wget https://raw.githubusercontent.com/avnet-iotconnect/iotc-lora-gateway-example/master/Dockerfile
 
-git clone git@github.com:akarnil/iotconnect-lora-demo.git -b master ./layers/iotconnect-lora-demo
+git clone git@github.com:avnet-iotconnect/iotc-lora-gateway-example.git -b master ./layers/iotconnect-lora-demo
 cd ./layers/iotconnect-lora-demo
 git submodule update --init
 cd -
@@ -45,7 +45,7 @@ cd -
 make docker
 
 DISTRO=openstlinux-weston MACHINE=stm32mp1 source layers/meta-st/scripts/envsetup.sh
-# go through all of the EULA and accept everything
+### go through all of the EULA and accept everything
 
 exit
 
@@ -56,15 +56,15 @@ bitbake-layers add-layer ../layers/iotconnect-lora-demo/meta-st-stm32mpu-app-lor
 exit
 
 make build
-# this will take a while as this is the initial build.
+### this will take a while as this is the initial build.
 ```
 
 5. Continue from Step 7 of [How to integrate LoRaWAN gateway](https://wiki.st.com/stm32mpu-ecosystem-v3/wiki/How_to_integrate_LoRaWAN_gateway#Software_setup) to prepare the board for flashing, you can use the `make flash` target to simplifiy the process instead.
 
 6. Continue through ST's tutorial to set up the LNS, the gateway and connect your devices in chirpstack.
-Once all of that is done, create a Global API key within chirpstack's interface and save it for futher use.
+Once all of that is done, create a Global API key within chirpstack's interface and save it for further use.
 
-7. Via `ssh` or `serial` access the `STM32MP157` and modifiy the `local_settings.py` file
+7. Via `ssh` or `serial` access the `STM32MP157` and modify the `local_settings.py` file
 
 (use a text editor of choice, nano is also available)
 
@@ -72,14 +72,27 @@ Once all of that is done, create a Global API key within chirpstack's interface 
 vi /usr/bin/local/iotc/local_settings.py
 ```
 
-Chirpstack connection:
-replace the truncated value for chirpstack_api_token with the global API key you just created.
+#### Chirpstack connection:
 
-IOTConnect connection:
-replace the truncated value for sid with the correct value from IOTConnect, and make sure the values of cpid and env are correct for your account
+replace the truncated value for `chirpstack_api_token` with the global API key you just created.
 
-IOTConnect template/device API:
-Replace the values in iotc_config (company_name, solution_key, company_guid) with the correct values for your account
+#### Template and device creation:
+
+If you have credentials for the IOTConnect template/device API, uncomment the `iotc_config` section.
+<br>Replace the values in `iotc_config` (`company_name, solution_key, company_guid`) with the correct values for your account.
+<br>This will automatically create and update the template and gateway device instance on IOTC as the lora nodes provide telemetry.
+
+If you do not have these credentials, a template json file (`./template_[Unique ID].json`) will be automatically written to the filesystem. 
+<br>As the lora nodes provide telemetry this will be updated, and can be uploaded to the IOTC portal.
+<br>The template will be complete once all nodes have updated their attributes.
+<br>It may be necessary to edit this file with e.g. the correct value for auth_type, which defaults to 1.
+<br>It is straightforward to save and exit `local_settings.py` at this point and run the application to build the template json file, then upload it and create the gateway device instance on the IOTConnect back end before setting credentials for the SDK client.
+
+Of course, if you prefer, you can manually create the template and device instance in the IOTConnect portal in the normal manner. The template json file can be used to assist with troubleshooting this.
+
+#### IOTConnect connection:
+
+Replace the truncated value for `sid` with the correct value from IOTConnect, and make sure the values of `cpid` and `env` are correct for your account.
 
 Make sure you save your changes with `!wq`
 
@@ -87,7 +100,6 @@ Make sure you save your changes with `!wq`
 ```bash
 ./usr/bin/local/iotc/lora_demo.py 
 ```
-the terminal multiplexer `screen` is installed.
 
 ### Notes
 
@@ -110,5 +122,7 @@ systemctl start lora-demo.service
 ```bash
 journalctl -fu lora-demo
 ```
+
+- The terminal multiplexer `screen` is installed.
 
 
