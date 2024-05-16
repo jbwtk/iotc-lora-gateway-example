@@ -47,49 +47,55 @@ Remove `recipes-framework` and `recipes-st` from `./layers/iotconnect-lora-demo/
 
 Remove or comment out all the `IMAGE_INSTALL:append` content in `./layers/iotconnect-lora-demo/meta-st-stm32mpu-app-lorawan/conf/layer.conf`
 
-append build tools to Yocto build:
-
+append build tools in `./build-openstlinuxweston-stm32mp1/conf/bblayers.conf`
 ```bash
-./build-openstlinuxweston-stm32mp1/conf/bblayers.conf
 EXTRA_IMAGE_FEATURES += " tools-sdk tools-debug debug-tweaks"
 IMAGE_INSTALL:append = "git"
-
-
+```
+Now you can build:
+```bash
 make build
 ```
 this will take a while as this is the initial build.
 
-flash device
+### flash device
+https://wiki.st.com/stm32mpu-ecosystem-v3/wiki/STM32MP1_Distribution_Package#Flashing_the_built_image
 
-
+```bash
+STM32_Programmer_CLI -c port=usb1 -w flashlayout_st-image-weston/trusted/FlashLayout_sdcard_stm32mp157c-dk2-trusted.tsv
+```
+or `make flash`
 ## Compile lora basics station on host
 
 apt get install git?
 
 Obtain and compile basicstation: following https://doc.sm.tc/station/compile.html
 ```bash
-$git clone https://github.com/lorabasics/basicstation.git
+$ git clone https://github.com/lorabasics/basicstation.git
+$ cd basicstation
 ```
 
-RAK5146 is in theory CoreCell compliant - I chose to separate the build at the stage I discovered that it wasn't:
+RAK5146 is in theory CoreCell compliant, and the build is based closely on the corecell platform example - I chose to create and use a separate `stm32` platform at the stage I discovered that it wasn't:
  
 create symlink to arm-ostl-linux-gnueabi-gcc - (/usr ?)
 ```bash
 $ln -s [path]  ~/toolchain-stm32
 ```
 
-edit ./setup.gmk echoing corecell setup for RAK5146 on stm32 platform:
+edit `./setup.gmk` echoing corecell setup for RAK5146 on stm32 platform:
 ```bash
 ARCH.stm32 = arm-ostl-linux-gnueabi      
 CFG.stm32 = linux lgw1 no_leds sx1302 
 DEPS.stm32 = mbedtls lgw1302
 CFLAGS.stm32.debug = -g O0
 LIBS.stm32 = -llgw1302  ${MBEDLIBS}      -lpthread -lrt
-
+```
+#### make lora basics station
+```bash
 $make platform=stm32 variant=std
 $make platform=stm32 variant=debug
 ```
-## Configure Concentrator
+## Configure Concentrator to use IOTConnect LNS
 
 ### Set up STM32 gateway and Nucleo WL55, Astra1B at IOTC
 
@@ -98,13 +104,13 @@ See https://docs.iotconnect.io/iotconnect/user-manuals/devices/device/lorawan/
 get and save certs and trust chain
 
 ### Set up local instance
-create and cd to ~/basicstation/projects/iotc
+create and cd to `~/basicstation/projects/iotc`
 Get startup script:
 ```bash
 $cp ../../examples/corecell/start-station.sh ./
 $sed -i 's/corecell/stm32/g' start-station.sh
 ```
-create reset using libgpiod instead of deprecated /sys/class/gpio interface
+#### create reset using libgpiod instead of deprecated /sys/class/gpio interface
 
 edit `./concentrator-reset.sh`:
 ```bash
@@ -120,7 +126,7 @@ sleep 0.1
 gpioget gpiochip6 8
 sleep 0.5
 ```
-create wrapper for init (called by start-station.sh)
+#### create wrapper for init (called by start-station.sh)
 ```bash
 $vi ./rinit.sh
 
@@ -153,17 +159,17 @@ $mv certificate.pem.crt cups.crt
 $mv private.key cups.key
 ```
 
-you should have: 
+in `lns-iotc` you should have: 
 ```bash
-	station.conf
-	cups.crt
-	cups.key
-	cups.trust
-	cups.uri
-	tc.crt
-	tc.key
-	tc.trust
-	tc.uri
+station.conf
+cups.crt
+cups.key
+cups.trust
+cups.uri
+tc.crt
+tc.key
+tc.trust
+tc.uri
 ```
 ## Run The Station
 
