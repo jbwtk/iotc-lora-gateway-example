@@ -179,16 +179,24 @@ power up end nodes Nucleo WL55, Astra1b
 
 check telemetry at IOTC
 
-return to terminal and detach from screen session:<br>
-ctrl + a<br>
-ctrl + d<br>
+return to terminal, detach from screen and exit from session session:<br>
+&lt;ctrl + a&gt;<br>
+&lt;ctrl + d&gt;<br>
 `$ exit`
 
 
-The Nucleo WL55 has been successfully connected and stayed online<br>
-The Astra1b has not stayed connected for more than a half hour so far - however there have been issues raised with Softweb support fairly regularly and this might be due to ongoing back end adjustments.
-
 ## Notes
+The Nucleo WL55 has been successfully connected and stayed online<br>
+The Astra1b has not stayed connected consistently - however there has been ongoing communication with Softweb support fairly regularly and this might be due to ongoing back end adjustments.
+The concentrator process can be stopped and restarted: 
+
+```bash
+$ ssh root@stm32mp1.local
+$ screen -r
+<ctrl + c>
+$ ./start-station.sh -l lns-iotc
+```
+
 Set up a TTN account to test/compare connectivity.<br>
 The Nucleowl1 was set to LoRaWAN spec 1.0.4 with RP002 Regional Parameters 1.0.1<br>
 The Astra was set to the LoraWAN spec 1.0.2 with RP001 Regional Parameters 1.0.2<br>
