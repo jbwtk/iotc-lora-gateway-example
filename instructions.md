@@ -143,15 +143,18 @@ in `"SX1302_conf":{}` add:
 ```bash
 "pps": true, 
 ```
-import certs from IOTC
-in `tc.uri` put wss:// websockets url from iotc
-in `cups.uri` put https:// cups url from iotc
+import certs from IOTC<br>
+in `tc.uri` put wss:// websockets url from iotc<br>
+in `cups.uri` put https:// cups url from iotc<br>
 
 get cups archive from iotc
-```$mv certificate.pem.crt cups.crt
-$mv private.key cups.key```
+```
+$mv certificate.pem.crt cups.crt
+$mv private.key cups.key
+```
 
-you should have:
+you should have: 
+```bash
 	station.conf
 	cups.crt
 	cups.key
@@ -161,7 +164,7 @@ you should have:
 	tc.key
 	tc.trust
 	tc.uri
-
+```
 ## Run The Station
 
 ```bash
@@ -186,9 +189,9 @@ The Nucleo WL55 has been successfully connected and stayed online<br>
 The Astra1b has not stayed connected for more than a half hour so far - however there have been issues raised with Softweb support fairly regularly and this might be due to ongoing back end adjustments.
 
 ## Notes
-Set up a TTN account to test connectivity.<br>
+Set up a TTN account to test/compare connectivity.<br>
 The Nucleowl1 was set to LoRaWAN spec 1.0.4 with RP002 Regional Parameters 1.0.1<br>
 The Astra was set to the LoraWAN spec 1.0.2 with RP001 Regional Parameters 1.0.2<br>
 This was unexpected - when setting up with Chirpstack the same device profile was used for both devices - LoRaWAN spec 1.0.4, RP002 Regional Parameters 1.0.1
 
-Otherwise the setup was fairly simple: the data was retrieved in CayenneLPP format and both devices reported from 2024/05/12 1259  
+Otherwise the setup was fairly simple: the data was retrieved in CayenneLPP format and both devices reported successfully 
