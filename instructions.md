@@ -52,6 +52,9 @@ append build tools in `./build-openstlinuxweston-stm32mp1/conf/bblayers.conf`
 EXTRA_IMAGE_FEATURES += " tools-sdk tools-debug debug-tweaks"
 IMAGE_INSTALL:append = "git"
 ```
+These tools are large:<br>
+edit `STM32MP_ROOTFS_MAXSIZE_NAND` in `./layers/meta-st/meta-st-stm32mp/conf/machine/include/st-machine-common-stm32mp.inc` replacing 753664 with a larger number (>800000 ... 1232896?)
+
 Now you can build:
 ```bash
 make build
