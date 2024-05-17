@@ -75,7 +75,7 @@ $ git clone https://github.com/lorabasics/basicstation.git
 $ cd basicstation
 ```
 
-RAK5146 is in theory CoreCell compliant, and the build is based closely on the corecell platform example - I chose to create and use a separate `stm32` platform at the stage I discovered that it wasn't:
+RAK5146 is in theory CoreCell compliant, and the build is based closely on the corecell platform example - I chose to create and use a separate `stm32` platform at the stage I discovered that it wasn't due to the missing sensor:
  
 create symlink to arm-ostl-linux-gnueabi-gcc - (/usr ?)
 ```bash
