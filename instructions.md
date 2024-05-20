@@ -1,17 +1,25 @@
 # Lora Basics Station on STM32MP157DK
 Initially I could not get the basicstation to cross compile for the target platform. This may be due to my unfamiliarity with the format of setup.gmk.
-Also could not compile on the Kirkstone build from the lora demo Python app layer project, but was hardware-limited at the time and didn't want to corrupt the working build I had.
 
 Succeeded in compiling basicstation on a Dunfell build which will run on a HAL-patched Kirkstone.
 
-These instructions should enable a working system to be created. I was not certain exactly what was happening in the ST LoRaWAN/Chirpstack build that was facilitating the RAK5146 to hook up so stripped that build to get here - undoubtedly it would be more efficient to create a discrete build that facilitates simple installation but this is an analogue of how the working build was initially achieved. Although a successful compilation of lorabasics station was achieved on a Kirkstone build, it would not run successfully whereas the same host would run a binary built on Dunfell.
+These instructions should enable a working system to be created. I was not certain exactly what was happening in the ST LoRaWAN/Chirpstack build that was facilitating the RAK5146 to hook up so stripped the build to get here - undoubtedly it would be more efficient to create a discrete build that facilitates simple installation but this is an analogue of how the working build was initially achieved. 
+
+A successful compilation of lorabasics station was achieved on a Kirkstone build, but it would not run successfully whereas the same host would run a binary built on Dunfell.
 
 ## Create Environment
 
 
 ### Dunfell build environment image:
 
-follow the instructions to build an OS image at https://wiki.st.com/stm32mpu-ecosystem-v3/wiki/STM32MP1_Distribution_Package
+follow the instructions to build an OS image at https://wiki.st.com/stm32mpu-ecosystem-v3/wiki/STM32MP1_Distribution_Package:
+```
+$ mkdir openstlinux-5.10-dunfell-mp1-21-11-17
+$ cd openstlinux-5.10-dunfell-mp1-21-11-17
+$ repo init -u https://github.com/STMicroelectronics/oe-manifest.git -b refs/tags/openstlinux-5.10-dunfell-mp1-21-11-17
+$ repo sync
+$ DISTRO=openstlinux-weston MACHINE=stm32mp1 source layers/meta-st/scripts/envsetup.sh
+```
 
 append build tools in `./build-openstlinuxweston-stm32mp1/conf/bblayers.conf`
 ```bash
@@ -23,7 +31,7 @@ edit `STM32MP_ROOTFS_MAXSIZE_NAND` in `./layers/meta-st/meta-st-stm32mp/conf/mac
 
 Now you can build:
 ```bash
-make build
+$ bitbake st-image-weston
 ```
 this will take a while as this is the initial build.
 
@@ -72,38 +80,38 @@ with
 ```
 #### make lora basics station
 ```bash
-$make platform=stm32 variant=std
-$make platform=stm32 variant=debug
+$ make platform=stm32 variant=std
+$ make platform=stm32 variant=debug
 ```
 Copy ~/basicstation to a local filesystem
 
 
 ### Build patched Kirkstone image:
 ```bash
-mkdir iotconnect-stm32mp17-kirkstone
-cd iotconnect-stm32mp17-kirkstone
+$ mkdir iotconnect-stm32mp17-kirkstone
+$ cd iotconnect-stm32mp17-kirkstone
 
-repo init -u https://github.com/STMicroelectronics/oe-manifest.git -b refs/tags/openstlinux-5.15-yocto-kirkstone-mp1-v23.07.26
-repo sync    
+$ repo init -u https://github.com/STMicroelectronics/oe-manifest.git -b refs/tags/openstlinux-5.15-yocto-kirkstone-mp1-v23.07.26
+$ repo sync    
 
-wget https://raw.githubusercontent.com/avnet-iotconnect/iotc-lora-gateway-example/master/Makefile
-wget https://raw.githubusercontent.com/avnet-iotconnect/iotc-lora-gateway-example/master/Dockerfile
+$ wget https://raw.githubusercontent.com/avnet-iotconnect/iotc-lora-gateway-example/master/Makefile
+$ wget https://raw.githubusercontent.com/avnet-iotconnect/iotc-lora-gateway-example/master/Dockerfile
 
-git clone git@github.com:avnet-iotconnect/iotc-lora-gateway-example.git -b master ./layers/iotconnect-lora-demo
-cd ./layers/iotconnect-lora-demo
-git submodule update --init
-cd -
+$ git clone git@github.com:avnet-iotconnect/iotc-lora-gateway-example.git -b master ./layers/iotconnect-lora-demo
+$ cd ./layers/iotconnect-lora-demo
+$ git submodule update --init
+$ cd -
 
-make docker
+$ make docker
 
 DISTRO=openstlinux-weston MACHINE=stm32mp1 source layers/meta-st/scripts/envsetup.sh
 #### go through all of the EULA and accept everything
 
-exit
+$ exit
 
-make env
-bitbake-layers add-layer ../layers/iotconnect-lora-demo/meta-st-stm32mpu-app-lorawan/
-exit
+$ make env
+$ bitbake-layers add-layer ../layers/iotconnect-lora-demo/meta-st-stm32mpu-app-lorawan/
+$ exit
 ```
 
 At this point we have the kirkstone source and patches. 
@@ -143,8 +151,8 @@ get and save certs and trust chain
 create and cd to `~/basicstation/projects/iotc`
 Get startup script:
 ```bash
-$cp ../../examples/corecell/start-station.sh ./
-$sed -i 's/corecell/stm32/g' start-station.sh
+$ cp ../../examples/corecell/start-station.sh ./
+$ sed -i 's/corecell/stm32/g' start-station.sh
 ```
 #### create reset using libgpiod instead of deprecated /sys/class/gpio interface
 
@@ -164,22 +172,22 @@ sleep 0.5
 ```
 #### create wrapper for init (called by start-station.sh)
 ```bash
-$vi ./rinit.sh
+$ vi ./rinit.sh
 
 #!/bin/bash
 ./concentrator-reset.sh
 
-$:wq
-$chmod +x concentrator-reset.sh
-$chmod +x rinit.sh
+:wq
+$ chmod +x concentrator-reset.sh
+$ chmod +x rinit.sh
 ```
 
 ### Configure LNS
 
 ```bash
-$mkdir lns-iotc
-$cd lns-iotc
-$cp ../../examples/corecell/lns-ttn/station.conf ./
+$ mkdir lns-iotc
+$ cd lns-iotc
+$ cp ../../examples/corecell/lns-ttn/station.conf ./
 ```
 #### set pulse per second true to somewhat mitigate clock drifts
 
@@ -194,8 +202,8 @@ in `cups.uri` put https:// cups url from iotc<br>
 
 get cups archive from iotc
 ```
-$mv certificate.pem.crt cups.crt
-$mv private.key cups.key
+$ mv certificate.pem.crt cups.crt
+$ mv private.key cups.key
 ```
 
 in `lns-iotc` you should have: 
