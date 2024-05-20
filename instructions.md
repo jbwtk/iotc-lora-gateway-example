@@ -11,11 +11,11 @@ A compilation of Lora Basics Station on a Kirkstone build target with the build 
 
 Following the instructions to build a yocto image at https://wiki.st.com/stm32mpu-ecosystem-v3/wiki/STM32MP1_Distribution_Package:
 ```bash
-$ mkdir openstlinux-5.10-dunfell-mp1-21-11-17
-$ cd openstlinux-5.10-dunfell-mp1-21-11-17
-$ repo init -u https://github.com/STMicroelectronics/oe-manifest.git -b refs/tags/openstlinux-5.10-dunfell-mp1-21-11-17
-$ repo sync
-$ DISTRO=openstlinux-weston MACHINE=stm32mp1 source layers/meta-st/scripts/envsetup.sh
+mkdir openstlinux-5.10-dunfell-mp1-21-11-17
+cd openstlinux-5.10-dunfell-mp1-21-11-17
+repo init -u https://github.com/STMicroelectronics/oe-manifest.git -b refs/tags/openstlinux-5.10-dunfell-mp1-21-11-17
+repo sync
+DISTRO=openstlinux-weston MACHINE=stm32mp1 source layers/meta-st/scripts/envsetup.sh
 ```
 append build tools in `./build-openstlinuxweston-stm32mp1/conf/bblayers.conf`
 ```bash
@@ -27,7 +27,7 @@ edit `STM32MP_ROOTFS_MAXSIZE_NAND` in `./layers/meta-st/meta-st-stm32mp/conf/mac
 
 Now you can build:
 ```bash
-$ bitbake st-image-weston
+bitbake st-image-weston
 ```
 this will take a while.
 
@@ -44,8 +44,8 @@ SSH into root@stm32mp1.local (or by IP)<br>
 Obtain and compile basicstation:<br>
 following https://doc.sm.tc/station/compile.html
 ```bash
-$ git clone https://github.com/lorabasics/basicstation.git
-$ cd basicstation
+git clone https://github.com/lorabasics/basicstation.git
+cd basicstation
 ```
 
 RAK5146 is in theory CoreCell compliant, and the build is based closely on the corecell platform example - I chose to create and use a separate `stm32` platform at the stage I discovered that it wasn't strictly compliant due to the missing sensor, but the corecell platform could equally be used:
@@ -77,37 +77,37 @@ with
 ```
 #### make lora basics station
 ```bash
-$ make platform=stm32 variant=std
-$ make platform=stm32 variant=debug
+make platform=stm32 variant=std
+make platform=stm32 variant=debug
 ```
 Copy ~/basicstation to a local filesystem
 
 ### Build patched Kirkstone image:
 ```bash
-$ mkdir iotconnect-stm32mp17-kirkstone
-$ cd iotconnect-stm32mp17-kirkstone
+mkdir iotconnect-stm32mp17-kirkstone
+cd iotconnect-stm32mp17-kirkstone
 
-$ repo init -u https://github.com/STMicroelectronics/oe-manifest.git -b refs/tags/openstlinux-5.15-yocto-kirkstone-mp1-v23.07.26
-$ repo sync    
+repo init -u https://github.com/STMicroelectronics/oe-manifest.git -b refs/tags/openstlinux-5.15-yocto-kirkstone-mp1-v23.07.26
+repo sync    
 
-$ wget https://raw.githubusercontent.com/avnet-iotconnect/iotc-lora-gateway-example/master/Makefile
-$ wget https://raw.githubusercontent.com/avnet-iotconnect/iotc-lora-gateway-example/master/Dockerfile
+wget https://raw.githubusercontent.com/avnet-iotconnect/iotc-lora-gateway-example/master/Makefile
+wget https://raw.githubusercontent.com/avnet-iotconnect/iotc-lora-gateway-example/master/Dockerfile
 
-$ git clone git@github.com:avnet-iotconnect/iotc-lora-gateway-example.git -b master ./layers/iotconnect-lora-demo
-$ cd ./layers/iotconnect-lora-demo
-$ git submodule update --init
-$ cd -
+git clone git@github.com:avnet-iotconnect/iotc-lora-gateway-example.git -b master ./layers/iotconnect-lora-demo
+cd ./layers/iotconnect-lora-demo
+git submodule update --init
+cd -
 
-$ make docker
+make docker
 
 DISTRO=openstlinux-weston MACHINE=stm32mp1 source layers/meta-st/scripts/envsetup.sh
 #### go through all of the EULA and accept everything
 
-$ exit
+exit
 
-$ make env
-$ bitbake-layers add-layer ../layers/iotconnect-lora-demo/meta-st-stm32mpu-app-lorawan/
-$ exit
+make env
+bitbake-layers add-layer ../layers/iotconnect-lora-demo/meta-st-stm32mpu-app-lorawan/
+exit
 ```
 
 At this point we have the kirkstone source and patches. 
@@ -134,7 +134,7 @@ or `make flash`
 
 Return to the local folder where you stored basicstation build.
 ```bash
-$ scp -r ./basicstation root@stm32mp1.local:
+scp -r ./basicstation root@stm32mp1.local:
 ```
 
 ## Configure Concentrator to use IOTConnect LNS
@@ -146,13 +146,13 @@ get and save certs and trust chain
 
 ### Set up local instance
 ```
-$ ssh root@stm32mp1.local
+ssh root@stm32mp1.local
 ```
 create and cd to `~/basicstation/projects/iotc`
 Get startup script:
 ```bash
-$ cp ../../examples/corecell/start-station.sh ./
-$ sed -i 's/corecell/stm32/g' start-station.sh
+cp ../../examples/corecell/start-station.sh ./
+sed -i 's/corecell/stm32/g' start-station.sh
 ```
 #### create reset using libgpiod instead of deprecated /sys/class/gpio interface
 
@@ -172,7 +172,7 @@ sleep 0.5
 ```
 #### create wrapper for init (called by start-station.sh)
 ```bash
-$ vi ./rinit.sh
+vi ./rinit.sh
 
 #!/bin/bash
 ./concentrator-reset.sh
@@ -180,9 +180,9 @@ $ vi ./rinit.sh
 ```
 ### Configure LNS
 ```bash
-$ mkdir lns-iotc
-$ cd lns-iotc
-$ cp ../../examples/corecell/lns-ttn/station.conf ./
+mkdir lns-iotc
+cd lns-iotc
+cp ../../examples/corecell/lns-ttn/station.conf ./
 ```
 #### set pulse per second true to somewhat mitigate clock drifts
 edit `station.conf`<br>
@@ -196,8 +196,8 @@ in `cups.uri` put https:// cups url from iotc<br>
 
 get cups archive from iotc
 ```
-$ mv certificate.pem.crt cups.crt
-$ mv private.key cups.key
+mv certificate.pem.crt cups.crt
+mv private.key cups.key
 ```
 in `lns-iotc` you should have: 
 ```bash
@@ -214,10 +214,10 @@ tc.uri
 ## Run The Station
 
 ```bash
-$ ssh root@stm32mp1.local
-$ screen
-$ cd basicstation/projects/iotc/
-$ ./start-station.sh -l lns-iotc
+ssh root@stm32mp1.local
+screen
+cd basicstation/projects/iotc/
+./start-station.sh -l lns-iotc
 ```
 check connection at IOTC
 
@@ -228,7 +228,7 @@ check telemetry at IOTC
 return to terminal, detach from screen and exit from session session:<br>
 &lt;ctrl + a&gt;<br>
 &lt;ctrl + d&gt;<br>
-`$ exit`
+`exit`
 
 
 ## Notes
@@ -237,10 +237,10 @@ The Astra1b has not stayed connected consistently - however there has been ongoi
 The concentrator process can be stopped and restarted: 
 
 ```bash
-$ ssh root@stm32mp1.local
-$ screen -r
+ssh root@stm32mp1.local
+screen -r
 <ctrl + c>
-$ ./start-station.sh -l lns-iotc
+./start-station.sh -l lns-iotc
 ```
 
 Set up a TTN account to test/compare connectivity.<br>
