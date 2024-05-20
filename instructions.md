@@ -5,14 +5,14 @@ Succeeded in compiling basicstation on a Dunfell build which will run on a HAL-p
 
 These instructions should enable a working system to be created. I was not certain exactly what was happening in the ST LoRaWAN/Chirpstack build that was facilitating the RAK5146 to hook up so stripped the build to get here - undoubtedly it would be more efficient to create a discrete build that facilitates simple installation but this is an analogue of how the working build was initially achieved. 
 
-A successful compilation of Lora Basics Station was achieved on a Kirkstone build but it would not run successfully, whereas the same host would run a binary built on Dunfell.
+A successful compilation of Lora Basics Station was achieved on a Kirkstone build with the build tools in place but it would not run successfully, whereas the same host could run a binary built on Dunfell.
 
 ## Create Environment
 
 ### Dunfell build environment image:
 
-follow the instructions to build an OS image at https://wiki.st.com/stm32mpu-ecosystem-v3/wiki/STM32MP1_Distribution_Package:
-```
+following the instructions to build a yocto image at https://wiki.st.com/stm32mpu-ecosystem-v3/wiki/STM32MP1_Distribution_Package:
+```bash
 $ mkdir openstlinux-5.10-dunfell-mp1-21-11-17
 $ cd openstlinux-5.10-dunfell-mp1-21-11-17
 $ repo init -u https://github.com/STMicroelectronics/oe-manifest.git -b refs/tags/openstlinux-5.10-dunfell-mp1-21-11-17
@@ -25,8 +25,8 @@ append build tools in `./build-openstlinuxweston-stm32mp1/conf/bblayers.conf`
 EXTRA_IMAGE_FEATURES += " tools-sdk tools-debug debug-tweaks"
 IMAGE_INSTALL:append = "git"
 ```
-These tools are large and the default maximum filesystem size must be increased:<br>
-edit `STM32MP_ROOTFS_MAXSIZE_NAND` in `./layers/meta-st/meta-st-stm32mp/conf/machine/include/st-machine-common-stm32mp.inc` replacing 753664 with a larger number (>800000 ... 1232896?)
+These tools are large; the default maximum filesystem size must be increased:<br>
+edit `STM32MP_ROOTFS_MAXSIZE_NAND` in `./layers/meta-st/meta-st-stm32mp/conf/machine/include/st-machine-common-stm32mp.inc` replacing the set value with a larger number (>800000 ... 1232896?)
 
 Now you can build:
 ```bash
@@ -41,15 +41,17 @@ https://wiki.st.com/stm32mpu-ecosystem-v3/wiki/STM32MP1_Distribution_Package#Fla
 STM32_Programmer_CLI -c port=usb1 -w flashlayout_st-image-weston/trusted/FlashLayout_sdcard_stm32mp157c-dk2-trusted.tsv
 ```
 
-## Compile Lora Basics Station on STM32 host
+## Compile Lora Basics Station on dunfell host
 
-Obtain and compile basicstation: following https://doc.sm.tc/station/compile.html
+SSH into root@[STM IP]<br>
+Obtain and compile basicstation:<br>
+following https://doc.sm.tc/station/compile.html
 ```bash
 $ git clone https://github.com/lorabasics/basicstation.git
 $ cd basicstation
 ```
 
-RAK5146 is in theory CoreCell compliant, and the build is based closely on the corecell platform example - I chose to create and use a separate `stm32` platform at the stage I discovered that it wasn't due to the missing sensor:
+RAK5146 is in theory CoreCell compliant, and the build is based closely on the corecell platform example - I chose to create and use a separate `stm32` platform at the stage I discovered that it wasn't strictly compliant due to the missing sensor, but the corecell platform could equally be used:
  
 create symlink for stm32 platform to arm-ostl-linux-gnueabi-gcc - (/usr ?)
 ```bash
@@ -117,10 +119,8 @@ At this point we have the kirkstone source and patches.
 
 Before build we take out the chirpstack and application stuff as all we actually want it for is patch HAL with necessary bits from ST Chirpstack layer to emulate temperature sensor missing from RAK5146
 
-Remove `meta-iotconnect-lora-demo/` from `./layers/iotconnect-lora-demo`
-
-Remove `recipes-framework` and `recipes-st` from `./layers/iotconnect-lora-demo/meta-st-stm32mpu-app-lorawan/`
-
+Remove `meta-iotconnect-lora-demo/` from `./layers/iotconnect-lora-demo`<br>
+Remove `recipes-framework` and `recipes-st` from `./layers/iotconnect-lora-demo/meta-st-stm32mpu-app-lorawan/`<br>
 Remove or comment out all the `IMAGE_INSTALL:append` content in `./layers/iotconnect-lora-demo/meta-st-stm32mpu-app-lorawan/conf/layer.conf`
 
 Now you can build:
