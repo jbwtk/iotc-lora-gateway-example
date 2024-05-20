@@ -4,9 +4,10 @@ Also could not compile on the Kirkstone build from the lora demo Python app laye
 
 Succeeded in compiling basicstation on a Dunfell build which will run on a HAL-patched Kirkstone.
 
+These instructions should enable a working system to be created. I was not certain exactly what was happening in the ST LoRaWAN/Chirpstack build that was facilitating the RAK5146 to hook up so stripped that build to get here - undoubtedly it would be more efficient to create a discrete build that facilitates simple installation but this is an analogue of how the working build was initially achieved. Although a successful compilation of lorabasics station was achieved on a Kirkstone build, it would not run successfully whereas the same host would run a binary built on Dunfell.
+
 ## Create Environment
 
-These instructions should enable a working system to be created. I was not certain exactly what was happening in the ST LoRaWAN/Chirpstack build that was facilitating the RAK5146 to hook up so stripped that build to get here - undoubtedly it would be more efficient to create a discrete build that facilitates simple installation but this is an analogue of how the working build was initially achieved. Although a successful compilation of lorabasics station was achieved on a Kirkstone build, it would not run successfully whereas the same host would run a binary built on Dunfell.
 
 ### Dunfell build environment image:
 
