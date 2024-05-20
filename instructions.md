@@ -1,7 +1,5 @@
 # Lora Basics Station on STM32MP157DK
-I could not get the basicstation to cross compile for the target platform. This may be due to my unfamiliarity with the format of setup.gmk and cross-compiling.
-
-Succeeded in compiling basicstation on a Dunfell build which will run on a HAL-patched Kirkstone.
+I could not get the basicstation to cross compile for the target platform. This may be due to my unfamiliarity with the format of setup.gmk and cross-compiling, but succeeded in compiling basicstation on a Dunfell build which will run on a HAL-patched Kirkstone.
 
 These instructions should enable a working system to be created. I was not certain exactly what was happening in the ST LoRaWAN/Chirpstack build that was facilitating the RAK5146 to hook up so stripped the build to get here - undoubtedly it would be more efficient to create a discrete build that facilitates simple installation but this is an analogue of how the working build was initially achieved. 
 
@@ -19,7 +17,6 @@ $ repo init -u https://github.com/STMicroelectronics/oe-manifest.git -b refs/tag
 $ repo sync
 $ DISTRO=openstlinux-weston MACHINE=stm32mp1 source layers/meta-st/scripts/envsetup.sh
 ```
-
 append build tools in `./build-openstlinuxweston-stm32mp1/conf/bblayers.conf`
 ```bash
 EXTRA_IMAGE_FEATURES += " tools-sdk tools-debug debug-tweaks"
@@ -32,7 +29,7 @@ Now you can build:
 ```bash
 $ bitbake st-image-weston
 ```
-this will take a while as this is the initial build.
+this will take a while.
 
 ### flash device
 https://wiki.st.com/stm32mpu-ecosystem-v3/wiki/STM32MP1_Distribution_Package#Flashing_the_built_image
@@ -57,7 +54,6 @@ create symlink for stm32 platform to arm-ostl-linux-gnueabi-gcc - (/usr ?)
 ```bash
 $ln -s /usr ~/toolchain-stm32
 ```
-
 edit `./setup.gmk` echoing corecell setup for RAK5146 on stm32 platform:
 ```bash
 ARCH.stm32 = arm-ostl-linux-gnueabi
@@ -70,7 +66,7 @@ Duplicate the corecell patch
 `$cp ./deps/lgw1302/V2.1.0-corecell.patch ./deps/lgw1302/V2.1.0-stm32.patch`
 
 The build process somehow misses picking up a variable `LGW_LBT_ISSUE`. This is possibly related to patching the HAL for the radio.<br>
-There may be a correct way to address the LGW_LBT_ISSUE, but being a pragmatic non-C programmer:<br>
+There may be a correct way to address LGW_LBT_ISSUEs, but being a pragmatic non-C programmer:<br>
 edit line 239 of `./src/ral_lgw.c` replacing 
 ```
         if( err != LGW_LBT_ISSUE ) { 
@@ -85,7 +81,6 @@ $ make platform=stm32 variant=std
 $ make platform=stm32 variant=debug
 ```
 Copy ~/basicstation to a local filesystem
-
 
 ### Build patched Kirkstone image:
 ```bash
@@ -186,16 +181,13 @@ $ vi ./rinit.sh
 $ chmod +x concentrator-reset.sh
 $ chmod +x rinit.sh
 ```
-
 ### Configure LNS
-
 ```bash
 $ mkdir lns-iotc
 $ cd lns-iotc
 $ cp ../../examples/corecell/lns-ttn/station.conf ./
 ```
 #### set pulse per second true to somewhat mitigate clock drifts
-
 edit `station.conf`<br>
 in `"SX1302_conf":{}` add:
 ```bash
@@ -210,7 +202,6 @@ get cups archive from iotc
 $ mv certificate.pem.crt cups.crt
 $ mv private.key cups.key
 ```
-
 in `lns-iotc` you should have: 
 ```bash
 station.conf
