@@ -78,7 +78,7 @@ $make platform=stm32 variant=debug
 Copy ~/basicstation to a local filesystem
 
 
-### Build patched Kirkstone Yocto image:
+### Build patched Kirkstone image:
 ```bash
 mkdir iotconnect-stm32mp17-kirkstone
 cd iotconnect-stm32mp17-kirkstone
