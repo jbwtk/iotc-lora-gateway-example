@@ -1,14 +1,13 @@
 # Lora Basics Station on STM32MP157DK
-Initially I could not get the basicstation to cross compile for the target platform. This may be due to my unfamiliarity with the format of setup.gmk.
+I could not get the basicstation to cross compile for the target platform. This may be due to my unfamiliarity with the format of setup.gmk and cross-compiling.
 
 Succeeded in compiling basicstation on a Dunfell build which will run on a HAL-patched Kirkstone.
 
 These instructions should enable a working system to be created. I was not certain exactly what was happening in the ST LoRaWAN/Chirpstack build that was facilitating the RAK5146 to hook up so stripped the build to get here - undoubtedly it would be more efficient to create a discrete build that facilitates simple installation but this is an analogue of how the working build was initially achieved. 
 
-A successful compilation of lorabasics station was achieved on a Kirkstone build, but it would not run successfully whereas the same host would run a binary built on Dunfell.
+A successful compilation of Lora Basics Station was achieved on a Kirkstone build but it would not run successfully, whereas the same host would run a binary built on Dunfell.
 
 ## Create Environment
-
 
 ### Dunfell build environment image:
 
