@@ -148,6 +148,8 @@ $vi ./rinit.sh
 ./concentrator-reset.sh
 
 $:wq
+$chmod +x concentrator-reset.sh
+$chmod +x rinit.sh
 ```
 
 ### Configure LNS
