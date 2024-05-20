@@ -138,9 +138,6 @@ $ scp -r ./basicstation root@stm32mp1.local:
 ```
 
 ## Configure Concentrator to use IOTConnect LNS
-```
-$ ssh root@stm32mp1.local
-```
 ### Set up STM32 gateway and Nucleo WL55, Astra1B at IOTC
 
 See https://docs.iotconnect.io/iotconnect/user-manuals/devices/device/lorawan/
@@ -148,6 +145,9 @@ See https://docs.iotconnect.io/iotconnect/user-manuals/devices/device/lorawan/
 get and save certs and trust chain
 
 ### Set up local instance
+```
+$ ssh root@stm32mp1.local
+```
 create and cd to `~/basicstation/projects/iotc`
 Get startup script:
 ```bash
