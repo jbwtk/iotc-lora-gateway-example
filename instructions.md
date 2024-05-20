@@ -159,6 +159,7 @@ $cp ../../examples/corecell/lns-ttn/station.conf ./
 ```
 #### set pulse per second true to somewhat mitigate clock drifts
 
+edit `station.conf`<br>
 in `"SX1302_conf":{}` add:
 ```bash
 "pps": true, 
