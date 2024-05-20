@@ -3,13 +3,13 @@ I could not get the basicstation to cross compile for the target platform. This 
 
 These instructions should enable a working system to be created. I was not certain exactly what was happening in the ST LoRaWAN/Chirpstack build that was facilitating the RAK5146 to hook up so stripped the build to get here - undoubtedly it would be more efficient to create a discrete build that facilitates simple installation but this is an analogue of how the working build was initially achieved. 
 
-A successful compilation of Lora Basics Station was achieved on a Kirkstone build with the build tools in place but it would not run successfully, whereas the same host could run a binary built on Dunfell.
+A compilation of Lora Basics Station on a Kirkstone build target with the build tools in place showed no errors but it would not run successfully, whereas the same host could run a binary built on Dunfell.
 
 ## Create Environment
 
 ### Dunfell build environment image:
 
-following the instructions to build a yocto image at https://wiki.st.com/stm32mpu-ecosystem-v3/wiki/STM32MP1_Distribution_Package:
+Following the instructions to build a yocto image at https://wiki.st.com/stm32mpu-ecosystem-v3/wiki/STM32MP1_Distribution_Package:
 ```bash
 $ mkdir openstlinux-5.10-dunfell-mp1-21-11-17
 $ cd openstlinux-5.10-dunfell-mp1-21-11-17
