@@ -43,7 +43,7 @@ STM32_Programmer_CLI -c port=usb1 -w flashlayout_st-image-weston/trusted/FlashLa
 
 ## Compile Lora Basics Station on dunfell host
 
-SSH into root@[STM IP]<br>
+SSH into root@stm32mp1.local (or by IP)<br>
 Obtain and compile basicstation:<br>
 following https://doc.sm.tc/station/compile.html
 ```bash
@@ -137,9 +137,15 @@ STM32_Programmer_CLI -c port=usb1 -w flashlayout_st-image-weston/trusted/FlashLa
 ```
 or `make flash`
 
+Return to the local folder where you stored basicstation build.
+```bash
+$ scp -r ./basicstation root@stm32mp1.local:
+```
 
 ## Configure Concentrator to use IOTConnect LNS
-
+```
+$ ssh root@stm32mp1.local
+```
 ### Set up STM32 gateway and Nucleo WL55, Astra1B at IOTC
 
 See https://docs.iotconnect.io/iotconnect/user-manuals/devices/device/lorawan/
