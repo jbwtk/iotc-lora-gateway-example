@@ -145,7 +145,7 @@ sleep 0.5
 $vi ./rinit.sh
 
 #!/bin/bash
-:./concentrator-reset.sh
+./concentrator-reset.sh
 
 $:wq
 ```
