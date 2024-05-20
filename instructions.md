@@ -52,7 +52,7 @@ append build tools in `./build-openstlinuxweston-stm32mp1/conf/bblayers.conf`
 EXTRA_IMAGE_FEATURES += " tools-sdk tools-debug debug-tweaks"
 IMAGE_INSTALL:append = "git"
 ```
-These tools are large:<br>
+These tools are large and the default maximum filesystem size must be increased:<br>
 edit `STM32MP_ROOTFS_MAXSIZE_NAND` in `./layers/meta-st/meta-st-stm32mp/conf/machine/include/st-machine-common-stm32mp.inc` replacing 753664 with a larger number (>800000 ... 1232896?)
 
 Now you can build:
@@ -68,9 +68,7 @@ https://wiki.st.com/stm32mpu-ecosystem-v3/wiki/STM32MP1_Distribution_Package#Fla
 STM32_Programmer_CLI -c port=usb1 -w flashlayout_st-image-weston/trusted/FlashLayout_sdcard_stm32mp157c-dk2-trusted.tsv
 ```
 or `make flash`
-## Compile lora basics station on host
-
-apt get install git?
+## Compile Lora Basics Station on STM32 host
 
 Obtain and compile basicstation: following https://doc.sm.tc/station/compile.html
 ```bash
@@ -80,18 +78,31 @@ $ cd basicstation
 
 RAK5146 is in theory CoreCell compliant, and the build is based closely on the corecell platform example - I chose to create and use a separate `stm32` platform at the stage I discovered that it wasn't due to the missing sensor:
  
-create symlink to arm-ostl-linux-gnueabi-gcc - (/usr ?)
+create symlink for stm32 platform to arm-ostl-linux-gnueabi-gcc - (/usr ?)
 ```bash
-$ln -s [path]  ~/toolchain-stm32
+$ln -s /usr ~/toolchain-stm32
 ```
 
 edit `./setup.gmk` echoing corecell setup for RAK5146 on stm32 platform:
 ```bash
-ARCH.stm32 = arm-ostl-linux-gnueabi      
-CFG.stm32 = linux lgw1 no_leds sx1302 
+ARCH.stm32 = arm-ostl-linux-gnueabi
+CFG.stm32 = linux lgw1 no_leds sx1302
 DEPS.stm32 = mbedtls lgw1302
 CFLAGS.stm32.debug = -g O0
 LIBS.stm32 = -llgw1302  ${MBEDLIBS}      -lpthread -lrt
+```
+Duplicate the corecell patch
+`$cp ./deps/lgw1302/V2.1.0-corecell.patch ./deps/lgw1302/V2.1.0-stm32.patch`
+
+The build process somehow misses picking up a variable `LGW_LBT_ISSUE`. This is possibly related to patching the HAL for the radio.<br>
+There may be a correct way to address the LGW_LBT_ISSUE, but being a pragmatic non-C programmer:<br>
+edit line 239 of `./src/ral_lgw.c` replacing 
+```
+        if( err != LGW_LBT_ISSUE ) { 
+```
+with
+```
+        if( err != 1) { //LGW_LBT_ISSUE ) {
 ```
 #### make lora basics station
 ```bash
