@@ -177,9 +177,6 @@ $ vi ./rinit.sh
 #!/bin/bash
 ./concentrator-reset.sh
 
-:wq
-$ chmod +x concentrator-reset.sh
-$ chmod +x rinit.sh
 ```
 ### Configure LNS
 ```bash
