@@ -1,7 +1,7 @@
 # Lora Basics Station on STM32MP157DK
-I could not get the basicstation to cross compile for the target platform. This may be due to my unfamiliarity with the format of setup.gmk and cross-compiling, but succeeded in compiling basicstation on a Dunfell build which will run on a HAL-patched Kirkstone.
-
 These instructions should enable a working system to be created. I was not certain exactly what was happening in the ST LoRaWAN/Chirpstack build that was facilitating the RAK5146 to hook up so stripped the build to get here - undoubtedly it would be more efficient to create a discrete build that facilitates simple installation but this is an analogue of how the working build was initially achieved. 
+
+I could not get the basicstation to cross compile for the target platform. This may be due to my unfamiliarity with the format of setup.gmk and cross-compiling, but succeeded in compiling basicstation on a Dunfell build which will run on a HAL-patched Kirkstone.
 
 A compilation of Lora Basics Station on a Kirkstone build target with the build tools in place showed no errors but it would not run successfully, whereas the same host could run a binary built on Dunfell.
 
@@ -232,8 +232,8 @@ return to terminal, detach from screen and exit from session session:<br>
 
 
 ## Notes
-The Nucleo WL55 has been successfully connected and stayed online<br>
-The Astra1b has not stayed connected consistently - however there has been ongoing communication with Softweb support fairly regularly and this might be due to ongoing back end adjustments.
+The Nucleo WL55 and Astra1b have been successfully connected using the custom decoders now in place.<br>
+The devices have not stayed connected consistently and especially simultaneously - however there has been ongoing communication with Softweb support fairly regularly and this might be due to ongoing back end adjustments.
 The concentrator process can be stopped and restarted: 
 
 ```bash
