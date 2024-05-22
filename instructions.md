@@ -52,7 +52,7 @@ RAK5146 is in theory CoreCell compliant, and the build is based closely on the c
  
 create symlink for stm32 platform to arm-ostl-linux-gnueabi-gcc - (/usr ?)
 ```bash
-$ln -s /usr ~/toolchain-stm32
+ln -s /usr ~/toolchain-stm32
 ```
 edit `./setup.gmk` echoing corecell setup for RAK5146 on stm32 platform:
 ```bash
@@ -63,7 +63,7 @@ CFLAGS.stm32.debug = -g O0
 LIBS.stm32 = -llgw1302  ${MBEDLIBS}      -lpthread -lrt
 ```
 Duplicate the corecell patch
-`$cp ./deps/lgw1302/V2.1.0-corecell.patch ./deps/lgw1302/V2.1.0-stm32.patch`
+`cp ./deps/lgw1302/V2.1.0-corecell.patch ./deps/lgw1302/V2.1.0-stm32.patch`
 
 The build process somehow misses picking up a variable `LGW_LBT_ISSUE`. This is possibly related to patching the HAL for the radio.<br>
 There may be a correct way to address LGW_LBT_ISSUEs, but being a pragmatic non-C programmer:<br>
@@ -132,7 +132,7 @@ STM32_Programmer_CLI -c port=usb1 -w flashlayout_st-image-weston/trusted/FlashLa
 ```
 or `make flash`
 
-Return to the local folder where you stored basicstation build.
+Return to the local folder where you stored the basicstation build and transfer to the device.
 ```bash
 scp -r ./basicstation root@stm32mp1.local:
 ```
@@ -157,7 +157,8 @@ Get startup script:
 cp ../../examples/corecell/start-station.sh ./
 sed -i 's/corecell/stm32/g' start-station.sh
 ```
-#### create reset using libgpiod instead of deprecated /sys/class/gpio interface
+#### Create reset scripts
+using libgpiod instead of deprecated /sys/class/gpio interface
 
 edit `./concentrator-reset.sh`:
 ```bash
