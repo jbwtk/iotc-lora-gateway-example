@@ -142,6 +142,9 @@ scp -r ./basicstation root@stm32mp1.local:
 
 See https://docs.iotconnect.io/iotconnect/user-manuals/devices/device/lorawan/
 
+Template for Astra1B: https://awspoc.iotconnect.io/template/9/92DC0FD7-EC54-47B6-B4DE-648A7C9BAD12<br>
+Template for Nucleo: https://awspoc.iotconnect.io/template/9/0048F027-ED4D-4C1E-AD65-DE2C1F33DC94
+
 get and save certs and trust chain
 
 ### Set up local instance
