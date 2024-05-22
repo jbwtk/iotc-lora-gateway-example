@@ -3,7 +3,7 @@ These instructions should enable a working system to be created. I was not certa
 
 I could not get the basicstation to cross compile for the target platform. This may be due to my unfamiliarity with the format of setup.gmk and cross-compiling, but succeeded in compiling basicstation on a Dunfell build which will run on a HAL-patched Kirkstone.
 
-A compilation of Lora Basics Station on a Kirkstone build target with the build tools in place showed no errors but it would not run successfully, whereas the same host could run a binary built on Dunfell.
+A compilation of Lora Basics Station on a Kirkstone build target with the build tools in place showed no errors but it would not run successfully, whereas the samee) (Kirkston host could run a binary built on Dunfell.
 
 ## Create Environment
 
