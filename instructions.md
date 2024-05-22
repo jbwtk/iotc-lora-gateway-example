@@ -9,7 +9,7 @@ A compilation of Lora Basics Station on a Kirkstone build target with the build 
 
 ### Dunfell build environment image:
 
-Following the instructions to build a yocto image at https://wiki.st.com/stm32mpu-ecosystem-v3/wiki/STM32MP1_Distribution_Package:
+With reference to the instructions (e.g. install STM32 CubeProgrammer at https://wiki.st.com/stm32mpu-ecosystem-v3/wiki/STM32MP1_Distribution_Package:
 ```bash
 mkdir openstlinux-5.10-dunfell-mp1-21-11-17
 cd openstlinux-5.10-dunfell-mp1-21-11-17
@@ -35,6 +35,7 @@ this will take a while.
 https://wiki.st.com/stm32mpu-ecosystem-v3/wiki/STM32MP1_Distribution_Package#Flashing_the_built_image
 
 ```bash
+cd [build dir]/openstlinux-5.10-dunfell-mp1-21-11-17/build-openstlinuxweston-stm32mp1/tmp-glibc/deploy/images/stm32mp1
 STM32_Programmer_CLI -c port=usb1 -w flashlayout_st-image-weston/trusted/FlashLayout_sdcard_stm32mp157c-dk2-trusted.tsv
 ```
 
